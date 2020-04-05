@@ -56,7 +56,7 @@ class MySQLHandler extends AbstractProcessingHandler
      */
     private $fields           = array();
 
-
+    private $callId;
     /**
      * Constructor of this class, sets the PDO and calls parent constructor
      *
@@ -71,13 +71,15 @@ class MySQLHandler extends AbstractProcessingHandler
         $table,
         $additionalFields = array(),
         $level = Logger::DEBUG,
-        $bubble = true
+        $bubble = true,
+        $callId=null
     ) {
        if (!is_null($pdo)) {
             $this->pdo = $pdo;
         }
         $this->table = $table;
         $this->additionalFields = $additionalFields;
+        $this->callId = $callId;
         parent::__construct($level, $bubble);
     }
 
@@ -148,7 +150,7 @@ class MySQLHandler extends AbstractProcessingHandler
             $columns .= ", $f";
             $fields .= ", :$f";
         }
-
+        
         $this->statement = $this->pdo->prepare(
             'INSERT INTO `' . $this->table . '` (' . $columns . ') VALUES (' . $fields . ')'
         );
@@ -178,7 +180,7 @@ class MySQLHandler extends AbstractProcessingHandler
          * @see https://github.com/Seldaek/monolog/blob/master/doc/02-handlers-formatters-processors.md
          */
         if (isset($record['extra'])) {
-            $record['context'] = array_merge($record['context'], $record['extra']);
+            $record['context'] = array_merge($record['context'], $record['extra'],['unique_call_id'=>$this->callId]);
         }
 
         //'context' contains the array
