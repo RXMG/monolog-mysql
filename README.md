@@ -5,18 +5,29 @@ MySQL Handler for Monolog, which allows to store log messages in a MySQL Table.
 It can log text messages to a specific table, and creates the table automatically if it does not exist.
 The class further allows to dynamically add extra attributes, which are stored in a separate database field, and can be used for later analyzing and sorting.
 
-# HELP WANTED
-
-As I do not use this project myself anymore and I do not find the time to maintain this project as it deserves I would be happy to find someone taking it over. Please contact me at danielherrmann+gitlab@posteo.de if you'd be interesting to take over that project. Thanks!
-
 # Installation
 monolog-mysql is available via composer. Just add the following line to your required section in composer.json and do a `php composer.phar update`.
 
 ```
 "wazaari/monolog-mysql": ">1.0.0"
 ```
+# Database
 
-# Usage
+~~~
+CREATE TABLE `apilogs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `channel` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `level` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `message` varchar(4096) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `time` int(10) unsigned NOT NULL DEFAULT '0',
+  `unique_call_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `apicalls_channel_index` (`channel`),
+  KEY `apicalls_level_index` (`level`),
+  KEY `apicalls_time_index` (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  # Usage
+
+
 Just use it as any other Monolog Handler, push it to the stack of your Monolog Logger instance. The Handler however needs some parameters:
 
 - **$pdo** PDO Instance of your database. Pass along the PDO instantiation of your database connection with your database selected.
