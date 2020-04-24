@@ -26,7 +26,7 @@ CREATE TABLE `apilogs` (
   KEY `apicalls_level_index` (`level`),
   KEY `apicalls_time_index` (`time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  # Usage
-
+~~~
 
 Just use it as any other Monolog Handler, push it to the stack of your Monolog Logger instance. The Handler however needs some parameters:
 
